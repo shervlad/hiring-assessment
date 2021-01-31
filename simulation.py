@@ -79,13 +79,42 @@ class Simulator:
             y1.append(np.dot(t1_coeff,[1,x,x**2,x**3,x**4,x**5]))
             y2.append(np.dot(t2_coeff,[1,x,x**2,x**3,x**4,x**5]))
             y3.append(np.dot(t3_coeff,[1,x,x**2,x**3,x**4,x**5]))
-            
-        plt.plot(X, y1, label = "th1")
-        plt.plot(X, y2, label = "th2")
-        plt.plot(X, y3, label = "th3")
-        plt.xlabel('time')
-        plt.ylabel('theta')
-        plt.title('Joint angles as function of time ')
-        plt.legend()
+        
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharey=True)
+        ax1.plot(X, y1, label = "th1")
+        ax1.plot(X, y2, label = "th2")
+        ax1.plot(X, y3, label = "th3")
+        ax1.set_xlabel('time')
+        ax1.set_ylabel('theta')
+        ax1.set_title('Joint angles as function of time ')
+        ax1.legend()
+        
+        x_coords = []
+        y_coords = []
+        phi      = []
+        
+        for th1,th2,th3 in zip(y1,y2,y3):
+            [xx,yy,pp] = self.forward_kinematics(th1,th2,th3)
+            x_coords.append(xx)
+            y_coords.append(yy)
+            phi.append(pp)
+        ax2.plot(x_coords,y_coords, label="trajectory")
+        ax2.set_xlabel("x")
+        ax2.set_ylabel("y")
+        ax2.set_title('Robot Trajectory ')
+        ax2.legend()
+        ax3.plot(X,x_coords,label="x")
+        ax3.plot(X,y_coords,label="y")
+        ax3.set_xlabel("time")
+        ax3.set_ylabel("magnitude")
+        
+        ax3.set_title('Coordinates X and Y as function of time')
+        ax3.legend()
+        ax4.plot(X,phi,label="phi")
+        ax4.set_xlabel("time")
+        ax4.set_ylabel("phi")
+        ax4.set_title('Angle phi as func. of time')
+        ax4.legend()
+        
+        f.tight_layout()
         plt.show()
-
